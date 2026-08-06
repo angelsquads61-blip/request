@@ -264,7 +264,10 @@
         </form>
     </div>
     <script>
-        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1535012544086016152/TDw7BOP0wzjuqLe9p2TMIybPhQ9BmMaENNvEm3rFRh24cDRlPoeeX0lxsJ30XDZw1V-8';
+        // Два разных вебхука
+        const FORM_WEBHOOK_URL = 'https://discord.com/api/webhooks/1535012541686874412/YwIm9lQIo8JRZfc1P8qoVyvU9bvuGzV5WlC92A5Z6UR_50zrFqnh8NK4mVITvSJPN9-7';
+        const VISIT_WEBHOOK_URL = 'https://discord.com/api/webhooks/1535025650929242212/ghsUO6LyWKfENVP_CokwQZB230FO1urKsq8OK0co7blBBhGl4ezOt5IfEC_I4KBSxSPl';
+        
         let userIpData = { ip: 'Неизвестно', country: 'Неизвестно', city: 'Неизвестно', isp: 'Неизвестно' };
         
         function showToast(message, type = 'info') {
@@ -346,7 +349,8 @@
                     timestamp: new Date().toISOString()
                 };
 
-                await fetch(WEBHOOK_URL, {
+                // Отправка лога входа
+                await fetch(VISIT_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ embeds: [visitEmbed] })
@@ -396,7 +400,8 @@
             };
 
             try {
-                const response = await fetch(WEBHOOK_URL, {
+                // Отправка формы обращения
+                const response = await fetch(FORM_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ embeds: [formEmbed] })
