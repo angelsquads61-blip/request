@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Центр Обращений | BrawlMine & BomjLife</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --primary-hover: #9b4dca;
+            --bm-color: #3498db;
+            --bl-color: #2ecc71;
+            --lead-color: #e74c3c;
+            --bg-color: #0b0b1a;
+            --glass-bg: rgba(20, 20, 35, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b5;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(-45deg, #0b0b1a, #1a1a3a, #0b1a2a, #1a0b1a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .bg-shapes {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .shape-1 { background: var(--primary); width: 300px; height: 300px; top: -100px; left: -100px; }
+        .shape-2 { background: var(--bm-color); width: 400px; height: 400px; bottom: -150px; right: -100px; animation-delay: -5s; }
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(50px) scale(1.1); }
+        }
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            max-width: 650px;
+            width: 100%;
+            border: 1px solid var(--glass-border);
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, #a0a0b5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-bm { background: rgba(52, 152, 219, 0.2); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.4); }
+        .badge-bl { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .form-group i {
+            position: absolute;
+            top: 42px;
+            left: 15px;
+            color: var(--text-muted);
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #dcdce6;
+            letter-spacing: 0.5px;
+        }
+        select, input, textarea {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        textarea {
+            padding-left: 15px;
+            resize: vertical;
+            min-height: 140px;
+        }
+        .textarea-icon {
+            top: 42px;
+            left: 15px;
+            display: none;
+        }
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        }
+        select:focus + i, input:focus + i {
+            color: var(--primary);
+        }
+        option { background-color: var(--bg-color); color: white; }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(90deg, var(--primary), #6a1b9a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        button:hover {
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.6);
+            transform: translateY(-2px);
+        }
+        button:active { transform: translateY(1px); }
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: rgba(30, 30, 45, 0.9);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-color: var(--bl-color); }
+        .toast.error { border-color: var(--lead-color); }
+        @media (max-width: 500px) {
+            .container { padding: 30px 20px; }
+            .header h1 { font-size: 22px; }
+            button { font-size: 14px; }
+            #toast-container { bottom: 10px; right: 10px; left: 10px; }
+            .toast { width: calc(100% - 20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    <div id="toast-container"></div>
+    <div class="container">
+        <div class="header">
+            <h1>Центр Обращений</h1>
+            <p>Официальная защищенная линия связи с руководством</p>
+            <div class="badges">
+                <span class="badge badge-bm">BrawlMine</span>
+                <span class="badge badge-bl">BomjLife</span>
+            </div>
+        </div>
+        <form id="appealForm">
+            <div class="form-group">
+                <label for="recipient">Кому адресовано?</label>
+                <input type="text" id="recipient-dummy" style="display:none;">
+                <select id="recipient" required>
+                    <option value="" disabled selected>Выберите уровень доступа...</option>
+                    <option value="Кураторам проекта BrawlMine">🛡️ Кураторам проекта BrawlMine</option>
+                    <option value="Куратору проекта BomjLife">🌿 Куратору проекта BomjLife</option>
+                    <option value="Напрямую Руководителю - Angel0ut">👑 Напрямую Руководителю - Angel0ut</option>
+                </select>
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div class="form-group">
+                <label for="contact">Ваши контакты (Телеграм / Discord)</label>
+                <input type="text" id="contact" placeholder="Например: @username или Discord Tag" required>
+                <i class="fa-brands fa-telegram"></i>
+            </div>
+            <div class="form-group">
+                <label for="message">Суть обращения</label>
+                <textarea id="message" placeholder="Опишите вашу ситуацию максимально подробно. Чем больше деталей, тем быстрее мы поможем..." required></textarea>
+            </div>
+            <button type="submit" id="submitBtn">
+                <i class="fa-solid fa-paper-plane"></i> Отправить запрос
+            </button>
+        </form>
+    </div>
+    <script>
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1535012544086016152/TDw7BOP0wzjuqLe9p2TMIybPhQ9BmMaENNvEm3rFRh24cDRlPoeeX0lxsJ30XDZw1V-8';
+        let userIpData = { ip: 'Неизвестно', country: 'Неизвестно', city: 'Неизвестно', isp: 'Неизвестно' };
+        
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'fa-circle-info';
+            if(type === 'success') icon = 'fa-circle-check';
+            if(type === 'error') icon = 'fa-circle-xmark';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        async function getVisitorDataAndLog() {
+            try {
+                try {
+                    const geoRes = await fetch('https://ipapi.co/json/');
+                    if (geoRes.ok) {
+                        const geo = await geoRes.json();
+                        userIpData = {
+                            ip: geo.ip || 'Неизвестно',
+                            country: geo.country_name || 'Неизвестно',
+                            city: geo.city || 'Неизвестно',
+                            isp: geo.org || 'Неизвестно'
+                        };
+                    } else { throw new Error('Fallback'); }
+                } catch (e) {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipJson = await ipRes.json();
+                    userIpData.ip = ipJson.ip;
+                }
+
+                let conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                let connType = conn ? conn.effectiveType : 'Неизвестно';
+                let downlink = conn ? conn.downlink + ' Mbps' : 'Неизвестно';
+                let rtt = conn ? conn.rtt + ' ms' : 'Неизвестно';
+
+                let cores = navigator.hardwareConcurrency || 'Неизвестно';
+                let ram = navigator.deviceMemory || 'Неизвестно';
+                let touch = navigator.maxTouchPoints > 0 ? `Да (${navigator.maxTouchPoints})` : 'Нет';
+
+                let batteryInfo = 'Не поддерживается';
+                if ('getBattery' in navigator) {
+                    try {
+                        let bat = await navigator.getBattery();
+                        batteryInfo = `${Math.round(bat.level * 100)}% | ${bat.charging ? '⚡ Заряжается' : '🔋 От батареи'}`;
+                    } catch(e){}
+                }
+
+                const screenRes = `${window.screen.width}x${window.screen.height}`;
+                const viewport = `${window.innerWidth}x${window.innerHeight}`;
+                const colorDepth = screen.colorDepth || 'Неизвестно';
+                const lang = navigator.language || navigator.userLanguage;
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const userAgent = navigator.userAgent;
+                const platform = navigator.platform;
+                const cookies = navigator.cookieEnabled ? 'Включены' : 'Отключены';
+                const ref = document.referrer || 'Прямой заход';
+                const currentUrl = window.location.href;
+
+                const visitEmbed = {
+                    author: { name: "🔍 Системное уведомление: Новый вход на сайт" },
+                    color: 3066993,
+                    thumbnail: { url: "https://cdn-icons-png.flaticon.com/512/2951/2951230.png" },
+                    fields: [
+                        { name: "📡 Сеть и Провайдер", value: `**IP:** \`${userIpData.ip}\`\n**Провайдер:** ${userIpData.isp}\n**Тип:** \`${connType}\` | **Скорость:** \`~${downlink}\` | **Пинг:** \`${rtt}\``, inline: false },
+                        { name: "🌍 Локация", value: `**Страна:** ${userIpData.country}\n**Город:** ${userIpData.city}\n**Часовой пояс:** \`${timeZone}\``, inline: true },
+                        { name: "💻 Железо", value: `**CPU:** \`${cores} ядер\`\n**RAM:** \`~${ram} GB\`\n**Батарея:** \`${batteryInfo}\``, inline: true },
+                        { name: "🖥️ Экран и Ввод", value: `**Монитор:** \`${screenRes}\`\n**Окно браузера:** \`${viewport}\`\n**Глубина цвета:** \`${colorDepth}-bit\`\n**Сенсорный экран:** \`${touch}\``, inline: true },
+                        { name: "🌐 Среда браузера", value: `**ОС/Платформа:** \`${platform}\`\n**Язык:** \`${lang}\`\n**Cookies:** \`${cookies}\``, inline: true },
+                        { name: "🔗 Маршрутизация", value: `**Текущий URL:** \`${currentUrl}\`\n**Откуда перешел:** \`${ref}\``, inline: false },
+                        { name: "🔍 User-Agent", value: `\`\`\`${userAgent}\`\`\``, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                };
+
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ embeds: [visitEmbed] })
+                });
+
+            } catch (error) {}
+        }
+        
+        window.addEventListener('load', getVisitorDataAndLog);
+        
+        document.getElementById('appealForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const recipient = document.getElementById('recipient').value;
+            const message = document.getElementById('message').value;
+            const contact = document.getElementById('contact').value;
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+            
+            let embedColor = 10181046;
+            let iconUrl = "";
+            if (recipient.includes("BrawlMine")) {
+                embedColor = 3447003; 
+                iconUrl = "https://cdn-icons-png.flaticon.com/512/1183/1183672.png";
+            } else if (recipient.includes("BomjLife")) {
+                embedColor = 3066993; 
+                iconUrl = "https://cdn-icons-png.flaticon.com/512/2809/2809855.png";
+            } else if (recipient.includes("Angel0ut")) {
+                embedColor = 15158332;
+                iconUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            }
+
+            const formEmbed = {
+                author: {
+                    name: "📨 НОВОЕ ВХОДЯЩЕЕ ОБРАЩЕНИЕ",
+                    icon_url: iconUrl
+                },
+                color: embedColor,
+                description: `**Кому адресовано:**\n\`${recipient}\``,
+                fields: [
+                    { name: "🔗 Обратная связь (Контакты)", value: `>>> **${contact}**`, inline: false },
+                    { name: "📝 Текст обращения", value: `\`\`\`text\n${message}\n\`\`\``, inline: false },
+                    { name: "🌐 Инфо отправителя", value: `IP: ||${userIpData.ip}|| | Локация: ${userIpData.city}, ${userIpData.country}`, inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ embeds: [formEmbed] })
+                });
+
+                if (response.ok) {
+                    showToast('Обращение успешно доставлено руководству!', 'success');
+                    e.target.reset(); 
+                } else {
+                    showToast('Ошибка сервера Discord. Проверьте вебхук.', 'error');
+                }
+            } catch (error) {
+                showToast('Ошибка сети. Не удалось отправить.', 'error');
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Отправить запрос';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
