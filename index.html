@@ -1,425 +1,932 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Центр Обращений | BrawlMine & BomjLife</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #8a2be2;
-            --primary-hover: #9b4dca;
-            --bm-color: #3498db;
-            --bl-color: #2ecc71;
-            --lead-color: #e74c3c;
-            --bg-color: #0b0b1a;
-            --glass-bg: rgba(20, 20, 35, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-muted: #a0a0b5;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background: linear-gradient(-45deg, #0b0b1a, #1a1a3a, #0b1a2a, #1a0b1a);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .bg-shapes {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden; pointer-events: none;
-        }
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 10s infinite ease-in-out alternate;
-        }
-        .shape-1 { background: var(--primary); width: 300px; height: 300px; top: -100px; left: -100px; }
-        .shape-2 { background: var(--bm-color); width: 400px; height: 400px; bottom: -150px; right: -100px; animation-delay: -5s; }
-        @keyframes float {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(50px) scale(1.1); }
-        }
-        .container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            max-width: 650px;
-            width: 100%;
-            border: 1px solid var(--glass-border);
-            animation: fadeIn 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #fff, #a0a0b5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .header p {
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-        .badges {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .badge-bm { background: rgba(52, 152, 219, 0.2); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.4); }
-        .badge-bl { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-        .form-group i {
-            position: absolute;
-            top: 42px;
-            left: 15px;
-            color: var(--text-muted);
-            font-size: 18px;
-            transition: color 0.3s;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #dcdce6;
-            letter-spacing: 0.5px;
-        }
-        select, input, textarea {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.2);
-            color: var(--text-main);
-            font-size: 15px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        textarea {
-            padding-left: 15px;
-            resize: vertical;
-            min-height: 140px;
-        }
-        .textarea-icon {
-            top: 42px;
-            left: 15px;
-            display: none;
-        }
-        select:focus, input:focus, textarea:focus {
-            border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.4);
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
-        }
-        select:focus + i, input:focus + i {
-            color: var(--primary);
-        }
-        option { background-color: var(--bg-color); color: white; }
-        button {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(90deg, var(--primary), #6a1b9a);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        button:hover {
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.6);
-            transform: translateY(-2px);
-        }
-        button:active { transform: translateY(1px); }
-        button:disabled {
-            background: #555;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .toast {
-            background: rgba(30, 30, 45, 0.9);
-            backdrop-filter: blur(10px);
-            border-left: 4px solid var(--primary);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        .toast.show { transform: translateX(0); }
-        .toast.success { border-color: var(--bl-color); }
-        .toast.error { border-color: var(--lead-color); }
-        @media (max-width: 500px) {
-            .container { padding: 30px 20px; }
-            .header h1 { font-size: 22px; }
-            button { font-size: 14px; }
-            #toast-container { bottom: 10px; right: 10px; left: 10px; }
-            .toast { width: calc(100% - 20px); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Центр обращений | BrawlMine</title>
+<meta name="description" content="Официальная форма обращений к персоналу проекта BrawlMine: модераторы, старшая модерация, администрация и руководитель.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --bg-0:#0a0d12;
+  --panel:#121923;
+  --panel-soft:#0c1117;
+  --field:#0b1017;
+  --border:rgba(255,255,255,.09);
+  --border-strong:rgba(255,255,255,.18);
+  --text:#edf1f6;
+  --text-dim:#92a1b3;
+  --text-faint:#5f6f84;
+  --accent:#e2a33c;
+  --accent-soft:rgba(226,163,60,.15);
+  --l1:#4c8dff;
+  --l2:#8b7cf6;
+  --l3:#e2a33c;
+  --l4:#ef5a5a;
+  --danger:#ef5a5a;
+  --ok:#43c07c;
+  --radius-lg:20px;
+  --radius-md:13px;
+  --radius-sm:9px;
+  --shadow:0 24px 60px -28px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+[id]{scroll-margin-top:92px}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(1000px 520px at 6% -8%, rgba(76,141,255,.15), transparent 60%),
+    radial-gradient(900px 520px at 98% 105%, rgba(226,163,60,.08), transparent 60%),
+    var(--bg-0);
+  background-attachment:fixed;
+  color:var(--text);
+  line-height:1.5;
+  min-height:100vh;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,13,18,.78);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.topbar .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;min-height:64px;
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),#b97d1f);
+  display:flex;align-items:center;justify-content:center;
+  color:#1a1206;font-size:16px;flex-shrink:0;
+}
+.brand b{
+  display:block;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:17px;font-weight:600;line-height:1.15;
+}
+.brand span{display:block;font-size:12px;color:var(--text-faint)}
+.nav{display:flex;gap:4px}
+.nav a{
+  color:var(--text-dim);text-decoration:none;
+  font-size:13.5px;font-weight:500;
+  padding:8px 12px;border-radius:8px;
+  transition:color .15s,background .15s;
+  white-space:nowrap;
+}
+.nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.hero{padding:46px 0 30px}
+.hero h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(27px,4.2vw,40px);
+  font-weight:600;line-height:1.15;
+  max-width:20ch;
+}
+.hero p{
+  margin-top:14px;max-width:64ch;
+  font-size:15.5px;line-height:1.65;color:var(--text-dim);
+}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:22px}
+.fact{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--text-dim)}
+.fact i{color:var(--accent);font-size:14px}
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+  gap:24px;align-items:start;
+  opacity:0;transform:translateY(14px);
+  animation:rise .6s .05s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){
+  .layout{animation:none;opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+.stack{display:flex;flex-direction:column;gap:24px}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  padding:28px;
+}
+.card-head{margin-bottom:22px}
+.card-head h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:20px;font-weight:600;line-height:1.25;
+}
+.card-head p{font-size:13.5px;color:var(--text-dim);margin-top:6px;line-height:1.55}
+form{display:flex;flex-direction:column;gap:20px}
+.field{position:relative}
+.field label{
+  display:block;font-size:13px;font-weight:600;
+  color:#d7dee6;margin-bottom:8px;
+}
+.control{position:relative}
+.control i{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--text-faint);font-size:15px;pointer-events:none;
+}
+select,input,textarea{
+  width:100%;
+  font-family:inherit;font-size:14.5px;color:var(--text);
+  background:var(--field);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:13px 14px 13px 42px;
+  outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+textarea{padding-left:14px;resize:vertical;min-height:140px;line-height:1.55}
+select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:36px}
+.control.select-wrap::after{
+  content:"\f078";
+  font-family:"Font Awesome 6 Free";font-weight:900;
+  position:absolute;right:15px;top:50%;transform:translateY(-50%);
+  font-size:11px;color:var(--text-faint);pointer-events:none;
+}
+select:focus,input:focus,textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+option{background:#0e141c;color:#fff}
+.contact-row{display:grid;grid-template-columns:150px 1fr;gap:10px}
+.hint{font-size:12px;color:var(--text-faint);margin-top:8px;line-height:1.5}
+.hint.warn{
+  color:#f3a3a3;
+  background:rgba(239,90,90,.08);
+  border:1px solid rgba(239,90,90,.28);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+}
+.error-text{display:none;font-size:12px;color:var(--danger);margin-top:7px;line-height:1.45}
+.field.invalid .error-text{display:block}
+.field.invalid select,.field.invalid input,.field.invalid textarea{
+  border-color:var(--danger);
+  box-shadow:0 0 0 3px rgba(239,90,90,.12);
+}
+.counter{display:block;text-align:right;font-size:11.5px;color:var(--text-faint);margin-top:6px}
+.consent{
+  font-size:12px;color:var(--text-faint);line-height:1.55;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:11px 13px;
+}
+.alert{
+  display:none;gap:11px;align-items:flex-start;
+  background:rgba(239,90,90,.1);
+  border:1px solid rgba(239,90,90,.38);
+  border-radius:var(--radius-sm);
+  padding:13px 14px;font-size:13px;line-height:1.55;
+}
+.alert.show{display:flex}
+.alert i{color:var(--danger);margin-top:3px}
+.alert b{display:block;font-weight:600;margin-bottom:2px}
+.alert p{color:var(--text-dim)}
+button{
+  width:100%;padding:15px;border:none;
+  border-radius:var(--radius-md);
+  background:linear-gradient(90deg,var(--accent),#c78a2a);
+  color:#1a1206;
+  font-family:inherit;font-size:14.5px;font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:filter .15s,transform .15s;
+}
+button:hover{filter:brightness(1.08)}
+button:active{transform:scale(.99)}
+button:disabled{opacity:.55;cursor:not-allowed;filter:none}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,
+summary:focus-visible,.nav a:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+select:disabled,input:disabled,textarea:disabled{opacity:.55;cursor:not-allowed}
+.ladder{list-style:none;display:flex;flex-direction:column}
+.ladder li{
+  display:grid;grid-template-columns:34px 1fr;gap:14px;
+  position:relative;padding-bottom:22px;
+}
+.ladder li:last-child{padding-bottom:0}
+.ladder li:not(:last-child)::before{
+  content:"";position:absolute;left:16px;top:36px;bottom:2px;
+  width:2px;background:var(--border-strong);border-radius:2px;
+}
+.rank{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;
+  color:#0a0d12;background:var(--c);
+}
+.ladder b{font-size:14.5px;font-weight:600;display:block;line-height:1.35;padding-top:5px}
+.ladder p{font-size:13px;color:var(--text-dim);line-height:1.6;margin-top:3px}
+.tag{
+  display:inline-block;margin-left:8px;
+  font-size:11.5px;font-weight:600;
+  color:#f3a3a3;
+  background:rgba(239,90,90,.12);
+  border:1px solid rgba(239,90,90,.35);
+  border-radius:6px;padding:1px 7px;
+  vertical-align:1px;
+}
+.owner-note{
+  margin-top:9px;font-size:12.5px;line-height:1.55;color:#f0b0b0;
+  background:rgba(239,90,90,.07);
+  border:1px solid rgba(239,90,90,.24);
+  border-radius:var(--radius-sm);padding:10px 12px;
+}
+.steps{list-style:none;display:flex;flex-direction:column;gap:18px}
+.steps li{display:grid;grid-template-columns:30px 1fr;gap:14px}
+.step-n{
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--accent);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;
+}
+.steps b{font-size:14px;font-weight:600;display:block;padding-top:4px}
+.steps p{font-size:13px;color:var(--text-dim);line-height:1.6;margin-top:2px}
+.layout-2{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+  margin-top:24px;align-items:start;
+}
+.group + .group{margin-top:22px}
+.group-title{font-size:13px;font-weight:600;color:var(--text-dim);margin-bottom:12px}
+.rules{list-style:none;display:flex;flex-direction:column;gap:11px}
+.rules li{
+  display:grid;grid-template-columns:18px 1fr;gap:10px;
+  font-size:13.5px;color:var(--text-dim);line-height:1.55;
+}
+.rules i{margin-top:4px;font-size:13px}
+.rules .yes i{color:var(--ok)}
+.rules .no i{color:var(--danger)}
+.faq{display:flex;flex-direction:column}
+.faq details{border-top:1px solid var(--border)}
+.faq details:first-child{border-top:none;padding-top:0}
+.faq summary{
+  list-style:none;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:15px 0;font-size:14px;font-weight:600;line-height:1.4;
+}
+.faq details:first-child summary{padding-top:0}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"\f078";
+  font-family:"Font Awesome 6 Free";font-weight:900;
+  font-size:11px;color:var(--text-faint);flex-shrink:0;
+  transition:transform .2s;
+}
+.faq details[open] summary::after{transform:rotate(180deg)}
+.faq details p{font-size:13.5px;color:var(--text-dim);line-height:1.65;padding-bottom:16px}
+.foot{
+  margin-top:44px;padding:26px 0 44px;
+  border-top:1px solid var(--border);
+  font-size:12.5px;color:var(--text-faint);line-height:1.65;
+}
+.foot b{color:var(--text-dim);font-weight:600}
+#toast-container{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:999;width:min(92vw,380px);
+}
+.toast{
+  display:flex;align-items:center;gap:10px;
+  background:#141b25;border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  padding:12px 15px;font-size:13.5px;
+  box-shadow:0 14px 30px -10px rgba(0,0,0,.6);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .25s,transform .25s;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success i{color:var(--ok)}
+.toast.error i{color:var(--danger)}
+.toast.info i{color:var(--l1)}
+@media (max-width:960px){
+  .layout,.layout-2{grid-template-columns:1fr}
+  .hero{padding:34px 0 24px}
+}
+@media (max-width:720px){
+  .topbar .wrap{flex-wrap:wrap;padding-top:10px;padding-bottom:6px;gap:6px}
+  .nav{width:100%;overflow-x:auto;padding-bottom:6px;margin:0 -6px}
+  [id]{scroll-margin-top:118px}
+}
+@media (max-width:560px){
+  .wrap{padding:0 14px}
+  .card{padding:22px 18px;border-radius:16px}
+  .contact-row{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-    <div class="bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <div class="brand-mark"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <div><b>BrawlMine</b><span>Центр обращений</span></div>
+    </a>
+    <nav class="nav" aria-label="Разделы страницы">
+      <a href="#form">Подать обращение</a>
+      <a href="#levels">Уровни</a>
+      <a href="#how">Как это работает</a>
+      <a href="#rules">Правила</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+  </div>
+</header>
+<div class="wrap" id="top">
+  <section class="hero">
+    <h1>Обращение к персоналу BrawlMine</h1>
+    <p>Официальный канал связи игроков с модерацией, администрацией и руководителем проекта. Выберите подходящий уровень, опишите ситуацию — ответ придёт на указанный вами контакт.</p>
+    <div class="facts">
+      <div class="fact"><i class="fa-solid fa-layer-group"></i>Четыре уровня обращений</div>
+      <div class="fact"><i class="fa-solid fa-paper-plane"></i>Ответ в Telegram или Discord</div>
+      <div class="fact"><i class="fa-solid fa-shield-halved"></i>Проверка формата данных перед отправкой</div>
     </div>
-    <div id="toast-container"></div>
-    <div class="container">
-        <div class="header">
-            <h1>Центр Обращений</h1>
-            <p>Официальная защищенная линия связи с руководством</p>
-            <div class="badges">
-                <span class="badge badge-bm">BrawlMine</span>
-                <span class="badge badge-bl">BomjLife</span>
-            </div>
+  </section>
+  <div class="layout">
+    <section class="card" id="form">
+      <div class="card-head">
+        <h2>Новое обращение</h2>
+        <p>Заполните все поля. Чем точнее описание, тем быстрее его удастся рассмотреть.</p>
+      </div>
+      <form id="appealForm" novalidate autocomplete="off">
+        <div class="field">
+          <label for="recipient">Кому адресовано обращение</label>
+          <div class="control select-wrap">
+            <select id="recipient">
+              <option value="" disabled selected>Выберите уровень обращения...</option>
+              <option value="Модераторы">Модераторы</option>
+              <option value="Ст. Модерация">Ст. Модерация</option>
+              <option value="Администрация">Администрация</option>
+              <option value="Напрямую Руководителю - Angel0ut">Напрямую Руководителю — Angel0ut</option>
+            </select>
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <p class="hint" id="levelHint">Выбирайте минимально необходимый уровень — так обращение рассмотрят быстрее.</p>
+          <p class="error-text"></p>
         </div>
-        <form id="appealForm">
-            <div class="form-group">
-                <label for="recipient">Кому адресовано?</label>
-                <input type="text" id="recipient-dummy" style="display:none;">
-                <select id="recipient" required>
-                    <option value="" disabled selected>Выберите уровень доступа...</option>
-                    <option value="Кураторам проекта BrawlMine">🛡️ Кураторам проекта BrawlMine</option>
-                    <option value="Куратору проекта BomjLife">🌿 Кураторам проекта BomjLife</option>
-                    <option value="Напрямую Руководителю - Angel0ut">👑 Напрямую Руководителю - Angel0ut</option>
-                </select>
-                <i class="fa-solid fa-user-shield"></i>
+        <div class="field">
+          <label for="topic">Тема обращения</label>
+          <div class="control select-wrap">
+            <select id="topic">
+              <option value="" disabled selected>Выберите тему...</option>
+              <option value="Жалоба на игрока">Жалоба на игрока</option>
+              <option value="Апелляция наказания">Апелляция наказания</option>
+              <option value="Баг или ошибка">Баг или ошибка</option>
+              <option value="Вопрос по проекту">Вопрос по проекту</option>
+              <option value="Другое">Другое</option>
+            </select>
+            <i class="fa-solid fa-tag"></i>
+          </div>
+          <p class="error-text"></p>
+        </div>
+        <div class="field">
+          <label for="nickname">Игровой никнейм</label>
+          <div class="control">
+            <input type="text" id="nickname" placeholder="Например: Steve_01" maxlength="16" autocapitalize="off" spellcheck="false">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <p class="error-text"></p>
+        </div>
+        <div class="field">
+          <label for="contact">Контакт для связи</label>
+          <div class="contact-row">
+            <div class="control select-wrap">
+              <select id="contactType" aria-label="Тип контакта">
+                <option value="telegram">Telegram</option>
+                <option value="discord">Discord</option>
+              </select>
+              <i class="fa-brands fa-telegram" id="contactIcon"></i>
             </div>
-            <div class="form-group">
-                <label for="contact">Ваши контакты (Телеграм / Discord)</label>
-                <input type="text" id="contact" placeholder="Например: @username или Discord Tag" required>
-                <i class="fa-brands fa-telegram"></i>
+            <div class="control">
+              <input type="text" id="contact" placeholder="@username" maxlength="40" autocapitalize="off" spellcheck="false">
+              <i class="fa-solid fa-at"></i>
             </div>
-            <div class="form-group">
-                <label for="message">Суть обращения</label>
-                <textarea id="message" placeholder="Опишите вашу ситуацию максимально подробно. Чем больше деталей, тем быстрее мы поможем..." required></textarea>
+          </div>
+          <p class="hint" id="contactHint">Ваш Telegram-username, например @username</p>
+          <p class="error-text"></p>
+        </div>
+        <div class="field">
+          <label for="message">Суть обращения</label>
+          <textarea id="message" placeholder="Что произошло, когда и где, кто участвовал. Ссылки на скриншоты или видео — прямо в тексте." maxlength="1500"></textarea>
+          <span class="counter" id="counter">0 / 1500</span>
+          <p class="error-text"></p>
+        </div>
+        <p class="consent">Нажимая «Отправить запрос», вы подтверждаете согласие на передачу указанных данных персоналу проекта для обработки обращения.</p>
+        <div class="alert" id="alertBox" role="alert">
+          <i class="fa-solid fa-ban"></i>
+          <div><b id="alertTitle"></b><p id="alertText"></p></div>
+        </div>
+        <button type="submit" id="submitBtn">
+          <i class="fa-solid fa-paper-plane"></i><span>Отправить запрос</span>
+        </button>
+      </form>
+    </section>
+    <div class="stack">
+      <section class="card" id="levels">
+        <div class="card-head">
+          <h2>Уровни обращений</h2>
+          <p>Начинайте с первого уровня. Если вопрос не решён — переходите к следующему.</p>
+        </div>
+        <ol class="ladder">
+          <li style="--c:var(--l1)">
+            <div class="rank">1</div>
+            <div>
+              <b>Модераторы</b>
+              <p>Первая линия: жалобы на игроков, вопросы по правилам, мелкие нарушения и игровые ситуации.</p>
             </div>
-            <button type="submit" id="submitBtn">
-                <i class="fa-solid fa-paper-plane"></i> Отправить запрос
-            </button>
-        </form>
+          </li>
+          <li style="--c:var(--l2)">
+            <div class="rank">2</div>
+            <div>
+              <b>Ст. Модерация</b>
+              <p>Сложные и спорные случаи, пересмотр наказаний, вопросы, которые не удалось решить на первом уровне.</p>
+            </div>
+          </li>
+          <li style="--c:var(--l3)">
+            <div class="rank">3</div>
+            <div>
+              <b>Администрация</b>
+              <p>Серьёзные нарушения, технические проблемы и баги, вопросы к работе проекта и персонала.</p>
+            </div>
+          </li>
+          <li style="--c:var(--l4)">
+            <div class="rank">4</div>
+            <div>
+              <b>Руководитель — Angel0ut<span class="tag">только лично</span></b>
+              <p>Особо важные и личные вопросы, которые нельзя доверить персоналу.</p>
+              <div class="owner-note">Обращение публикуется в служебном канале с пометкой «не брать в работу». Сотрудники не вправе браться за него, пока Руководитель сам не разрешит. Текст обращения может быть виден персоналу.</div>
+            </div>
+          </li>
+        </ol>
+      </section>
+      <section class="card" id="how">
+        <div class="card-head">
+          <h2>Как это работает</h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <div class="step-n">1</div>
+            <div><b>Вы отправляете обращение</b><p>Форма проверяет ник, контакт и текст. Если что-то заполнено неверно, поле подсветится с подсказкой.</p></div>
+          </li>
+          <li>
+            <div class="step-n">2</div>
+            <div><b>Обращение попадает к выбранному уровню</b><p>Оно публикуется в служебном канале персонала с указанием уровня, темы, ника и контакта.</p></div>
+          </li>
+          <li>
+            <div class="step-n">3</div>
+            <div><b>Сотрудник берёт его в работу</b><p>Обращения рассматриваются в порядке поступления, по выбранному вами уровню.</p></div>
+          </li>
+          <li>
+            <div class="step-n">4</div>
+            <div><b>Вы получаете ответ</b><p>Сотрудник пишет вам в Telegram или Discord по контакту, который вы указали в форме.</p></div>
+          </li>
+        </ol>
+      </section>
     </div>
-    <script>
-        // Два разных вебхука
-        const FORM_WEBHOOK_URL = 'https://discord.com/api/webhooks/1535012541686874412/YwIm9lQIo8JRZfc1P8qoVyvU9bvuGzV5WlC92A5Z6UR_50zrFqnh8NK4mVITvSJPN9-7';
-        const VISIT_WEBHOOK_URL = 'https://discord.com/api/webhooks/1535025650929242212/ghsUO6LyWKfENVP_CokwQZB230FO1urKsq8OK0co7blBBhGl4ezOt5IfEC_I4KBSxSPl';
-        
-        let userIpData = { ip: 'Неизвестно', country: 'Неизвестно', city: 'Неизвестно', isp: 'Неизвестно' };
-        
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            let icon = 'fa-circle-info';
-            if(type === 'success') icon = 'fa-circle-check';
-            if(type === 'error') icon = 'fa-circle-xmark';
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 4000);
-        }
+  </div>
+  <div class="layout-2">
+    <section class="card" id="rules">
+      <div class="card-head">
+        <h2>Правила обращений</h2>
+        <p>Соблюдение этих правил ускоряет рассмотрение и помогает получить ответ.</p>
+      </div>
+      <div class="group">
+        <div class="group-title">Что нужно указать</div>
+        <ul class="rules">
+          <li class="yes"><i class="fa-solid fa-check"></i>Свой игровой ник — точно так, как он записан на сервере</li>
+          <li class="yes"><i class="fa-solid fa-check"></i>Что произошло, когда и где, кто был участником ситуации</li>
+          <li class="yes"><i class="fa-solid fa-check"></i>Ссылки на доказательства: скриншоты, видео (не более трёх)</li>
+          <li class="yes"><i class="fa-solid fa-check"></i>Действующий контакт в Telegram или Discord — по нему придёт ответ</li>
+        </ul>
+      </div>
+      <div class="group">
+        <div class="group-title">Что не рассматривается</div>
+        <ul class="rules">
+          <li class="no"><i class="fa-solid fa-xmark"></i>Оскорбления, спам и реклама, ссылки-приглашения на другие серверы</li>
+          <li class="no"><i class="fa-solid fa-xmark"></i>Повторные обращения по одному и тому же вопросу</li>
+          <li class="no"><i class="fa-solid fa-xmark"></i>Бессмысленный набор символов и вымышленные контакты</li>
+          <li class="no"><i class="fa-solid fa-xmark"></i>Обращения не по адресу — их могут передать другому уровню</li>
+        </ul>
+      </div>
+      <div class="group">
+        <div class="group-title">Ограничения</div>
+        <ul class="rules">
+          <li class="no"><i class="fa-solid fa-hourglass-half"></i>Между отправками действует пауза в 2 минуты</li>
+          <li class="no"><i class="fa-solid fa-ban"></i>За злоупотребление формой отправка может быть ограничена на срок — причина и срок будут показаны на странице</li>
+        </ul>
+      </div>
+    </section>
+    <section class="card" id="faq">
+      <div class="card-head">
+        <h2>Частые вопросы</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Куда придёт ответ?</summary>
+          <p>На контакт, который вы указали в форме: Telegram или Discord. Проверьте, что username написан верно, — иначе сотрудники не смогут с вами связаться.</p>
+        </details>
+        <details>
+          <summary>Как быстро рассмотрят обращение?</summary>
+          <p>Обращения рассматриваются в порядке поступления, срок зависит от загруженности персонала. Повторная отправка того же вопроса не ускоряет рассмотрение.</p>
+        </details>
+        <details>
+          <summary>Какой уровень выбрать?</summary>
+          <p>Минимально необходимый. Большинство вопросов решают модераторы. Если ответ не устроил или случай спорный — обращайтесь на следующий уровень.</p>
+        </details>
+        <details>
+          <summary>Что значит обращение лично Руководителю?</summary>
+          <p>Такое обращение публикуется в служебном канале с пометкой, что его нельзя брать в работу. Сотрудники могут взять его только с прямого разрешения Руководителя. Учтите, что текст обращения может быть виден персоналу в канале.</p>
+        </details>
+        <details>
+          <summary>Почему форма не принимает мой контакт или текст?</summary>
+          <p>Форма проверяет формат ника и контакта, а также содержательность текста: минимум 20 символов, не более трёх ссылок, без рекламы. Исправьте подсвеченные поля и отправьте снова.</p>
+        </details>
+        <details>
+          <summary>Почему отправка недоступна?</summary>
+          <p>Для вашего ника или контакта отправка обращений ограничена. На странице указаны срок ограничения и его причина.</p>
+        </details>
+        <details>
+          <summary>Какие данные вы получаете?</summary>
+          <p>Только те, что вы сами указываете в форме: уровень, тема, игровой ник, контакт и текст обращения. Мы не ведём скрытый сбор данных о посетителях страницы.</p>
+        </details>
+      </div>
+    </section>
+  </div>
+  <footer class="foot">
+    <b>BrawlMine — Центр обращений.</b> Форма предназначена для связи игроков с персоналом проекта. Отправляя обращение, вы передаёте только те данные, которые указали сами.
+  </footer>
+</div>
+<div id="toast-container" aria-live="polite"></div>
+<script>
+const FORM_WEBHOOK_URL = 'https://discord.com/api/webhooks/1535012541686874412/YwIm9lQIo8JRZfc1P8qoVyvU9bvuGzV5WlC92A5Z6UR_50zrFqnh8NK4mVITvSJPN9-7';
 
-        async function getVisitorDataAndLog() {
-            try {
-                try {
-                    const geoRes = await fetch('https://ipapi.co/json/');
-                    if (geoRes.ok) {
-                        const geo = await geoRes.json();
-                        userIpData = {
-                            ip: geo.ip || 'Неизвестно',
-                            country: geo.country_name || 'Неизвестно',
-                            city: geo.city || 'Неизвестно',
-                            isp: geo.org || 'Неизвестно'
-                        };
-                    } else { throw new Error('Fallback'); }
-                } catch (e) {
-                    const ipRes = await fetch('https://api.ipify.org?format=json');
-                    const ipJson = await ipRes.json();
-                    userIpData.ip = ipJson.ip;
-                }
+const OWNER_ALERT_MENTION = '@everyone';
 
-                let conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-                let connType = conn ? conn.effectiveType : 'Неизвестно';
-                let downlink = conn ? conn.downlink + ' Mbps' : 'Неизвестно';
-                let rtt = conn ? conn.rtt + ' ms' : 'Неизвестно';
+const LEVELS = {
+  'Модераторы': {
+    rank: 1,
+    color: '4c8dff',
+    desc: 'Первая линия: жалобы на игроков, вопросы по правилам, мелкие нарушения и игровые ситуации.'
+  },
+  'Ст. Модерация': {
+    rank: 2,
+    color: '8b7cf6',
+    desc: 'Сложные и спорные случаи, пересмотр наказаний, вопросы, не решённые на первом уровне.'
+  },
+  'Администрация': {
+    rank: 3,
+    color: 'e2a33c',
+    desc: 'Серьёзные нарушения, технические проблемы и баги, вопросы к работе проекта и персонала.'
+  },
+  'Напрямую Руководителю - Angel0ut': {
+    rank: 4,
+    color: 'ef5a5a',
+    personal: true,
+    desc: 'Обращение уйдёт в служебный канал с пометкой «не брать в работу». Сотрудники не вправе браться за него без разрешения Руководителя. Текст обращения может быть виден персоналу.'
+  }
+};
 
-                let cores = navigator.hardwareConcurrency || 'Неизвестно';
-                let ram = navigator.deviceMemory || 'Неизвестно';
-                let touch = navigator.maxTouchPoints > 0 ? `Да (${navigator.maxTouchPoints})` : 'Нет';
+const BLOCKLIST = [
+  { nick: 'ExampleNick', contact: '@example_user', until: '2026-01-01T00:00:00+06:00', reason: 'Пример записи (срок истёк)' }
+];
 
-                let batteryInfo = 'Не поддерживается';
-                if ('getBattery' in navigator) {
-                    try {
-                        let bat = await navigator.getBattery();
-                        batteryInfo = `${Math.round(bat.level * 100)}% | ${bat.charging ? '⚡ Заряжается' : '🔋 От батареи'}`;
-                    } catch(e){}
-                }
+const COOLDOWN_MS = 120000;
+const LS_LAST = 'appeal_last_sent';
+const LS_BLOCK = 'appeal_block_ref';
+const DEFAULT_LEVEL_HINT = 'Выбирайте минимально необходимый уровень — так обращение рассмотрят быстрее.';
 
-                const screenRes = `${window.screen.width}x${window.screen.height}`;
-                const viewport = `${window.innerWidth}x${window.innerHeight}`;
-                const colorDepth = screen.colorDepth || 'Неизвестно';
-                const lang = navigator.language || navigator.userLanguage;
-                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const userAgent = navigator.userAgent;
-                const platform = navigator.platform;
-                const cookies = navigator.cookieEnabled ? 'Включены' : 'Отключены';
-                const ref = document.referrer || 'Прямой заход';
-                const currentUrl = window.location.href;
+const form = document.getElementById('appealForm');
+const btn = document.getElementById('submitBtn');
+const recipientEl = document.getElementById('recipient');
+const levelHint = document.getElementById('levelHint');
+const messageEl = document.getElementById('message');
+const counterEl = document.getElementById('counter');
+const alertBox = document.getElementById('alertBox');
+const alertTitle = document.getElementById('alertTitle');
+const alertText = document.getElementById('alertText');
+const contactTypeEl = document.getElementById('contactType');
+const contactEl = document.getElementById('contact');
+const contactHint = document.getElementById('contactHint');
+const contactIcon = document.getElementById('contactIcon');
 
-                const visitEmbed = {
-                    author: { name: "🔍 Системное уведомление: Новый вход на сайт" },
-                    color: 3066993,
-                    thumbnail: { url: "https://cdn-icons-png.flaticon.com/512/2951/2951230.png" },
-                    fields: [
-                        { name: "📡 Сеть и Провайдер", value: `**IP:** \`${userIpData.ip}\`\n**Провайдер:** ${userIpData.isp}\n**Тип:** \`${connType}\` | **Скорость:** \`~${downlink}\` | **Пинг:** \`${rtt}\``, inline: false },
-                        { name: "🌍 Локация", value: `**Страна:** ${userIpData.country}\n**Город:** ${userIpData.city}\n**Часовой пояс:** \`${timeZone}\``, inline: true },
-                        { name: "💻 Железо", value: `**CPU:** \`${cores} ядер\`\n**RAM:** \`~${ram} GB\`\n**Батарея:** \`${batteryInfo}\``, inline: true },
-                        { name: "🖥️ Экран и Ввод", value: `**Монитор:** \`${screenRes}\`\n**Окно браузера:** \`${viewport}\`\n**Глубина цвета:** \`${colorDepth}-bit\`\n**Сенсорный экран:** \`${touch}\``, inline: true },
-                        { name: "🌐 Среда браузера", value: `**ОС/Платформа:** \`${platform}\`\n**Язык:** \`${lang}\`\n**Cookies:** \`${cookies}\``, inline: true },
-                        { name: "🔗 Маршрутизация", value: `**Текущий URL:** \`${currentUrl}\`\n**Откуда перешел:** \`${ref}\``, inline: false },
-                        { name: "🔍 User-Agent", value: `\`\`\`${userAgent}\`\`\``, inline: false }
-                    ],
-                    timestamp: new Date().toISOString()
-                };
+const SEND_LABEL = '<i class="fa-solid fa-paper-plane"></i><span>Отправить запрос</span>';
 
-                // Отправка лога входа
-                await fetch(VISIT_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [visitEmbed] })
-                });
+function storageGet(key) {
+  try { return localStorage.getItem(key); } catch (e) { return null; }
+}
+function storageSet(key, value) {
+  try { localStorage.setItem(key, value); } catch (e) {}
+}
+function storageDel(key) {
+  try { localStorage.removeItem(key); } catch (e) {}
+}
 
-            } catch (error) {}
-        }
-        
-        window.addEventListener('load', getVisitorDataAndLog);
-        
-        document.getElementById('appealForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const recipient = document.getElementById('recipient').value;
-            const message = document.getElementById('message').value;
-            const contact = document.getElementById('contact').value;
-            
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Отправка...';
-            btn.disabled = true;
-            
-            let embedColor = 10181046;
-            let iconUrl = "";
-            if (recipient.includes("BrawlMine")) {
-                embedColor = 3447003; 
-                iconUrl = "https://cdn-icons-png.flaticon.com/512/1183/1183672.png";
-            } else if (recipient.includes("BomjLife")) {
-                embedColor = 3066993; 
-                iconUrl = "https://cdn-icons-png.flaticon.com/512/2809/2809855.png";
-            } else if (recipient.includes("Angel0ut")) {
-                embedColor = 15158332;
-                iconUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-            }
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  let icon = 'fa-circle-info';
+  if (type === 'success') icon = 'fa-circle-check';
+  if (type === 'error') icon = 'fa-circle-xmark';
+  const i = document.createElement('i');
+  i.className = `fa-solid ${icon}`;
+  const span = document.createElement('span');
+  span.textContent = message;
+  toast.appendChild(i);
+  toast.appendChild(span);
+  container.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 4200);
+}
 
-            const formEmbed = {
-                author: {
-                    name: "📨 НОВОЕ ВХОДЯЩЕЕ ОБРАЩЕНИЕ",
-                    icon_url: iconUrl
-                },
-                color: embedColor,
-                description: `**Кому адресовано:**\n\`${recipient}\``,
-                fields: [
-                    { name: "🔗 Обратная связь (Контакты)", value: `>>> **${contact}**`, inline: false },
-                    { name: "📝 Текст обращения", value: `\`\`\`text\n${message}\n\`\`\``, inline: false },
-                    { name: "🌐 Инфо отправителя", value: `IP: ||${userIpData.ip}|| | Локация: ${userIpData.city}, ${userIpData.country}`, inline: false }
-                ],
-                timestamp: new Date().toISOString()
-            };
+function setError(id, message) {
+  const field = document.getElementById(id).closest('.field');
+  const p = field.querySelector('.error-text');
+  if (message) {
+    field.classList.add('invalid');
+    p.textContent = message;
+  } else {
+    field.classList.remove('invalid');
+    p.textContent = '';
+  }
+}
 
-            try {
-                // Отправка формы обращения
-                const response = await fetch(FORM_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [formEmbed] })
-                });
+function setFormDisabled(flag) {
+  Array.from(form.elements).forEach(el => { el.disabled = flag; });
+}
 
-                if (response.ok) {
-                    showToast('Обращение успешно доставлено руководству!', 'success');
-                    e.target.reset(); 
-                } else {
-                    showToast('Ошибка сервера Discord. Проверьте вебхук.', 'error');
-                }
-            } catch (error) {
-                showToast('Ошибка сети. Не удалось отправить.', 'error');
-            } finally {
-                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Отправить запрос';
-                btn.disabled = false;
-            }
-        });
-    </script>
+function updateLevelHint() {
+  const level = LEVELS[recipientEl.value];
+  if (!level) {
+    levelHint.textContent = DEFAULT_LEVEL_HINT;
+    levelHint.classList.remove('warn');
+    return;
+  }
+  levelHint.textContent = level.desc;
+  levelHint.classList.toggle('warn', !!level.personal);
+}
+
+function normNick(v) {
+  return String(v || '').trim().toLowerCase();
+}
+function normContact(v) {
+  return String(v || '').trim().toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^t\.me\//, '')
+    .replace(/^@/, '')
+    .replace(/\s+/g, '');
+}
+
+function entryActive(entry) {
+  if (!entry.until) return true;
+  const t = Date.parse(entry.until);
+  return !isNaN(t) && t > Date.now();
+}
+function entryRef(entry) {
+  return `${entry.until || 'forever'}|${entry.reason || ''}`;
+}
+function findBlock(nick, contact) {
+  const n = normNick(nick);
+  const c = normContact(contact);
+  return BLOCKLIST.find(entry => entryActive(entry) && (
+    (entry.nick && n && normNick(entry.nick) === n) ||
+    (entry.contact && c && normContact(entry.contact) === c)
+  )) || null;
+}
+function formatUntil(entry) {
+  return new Date(entry.until).toLocaleString('ru-RU', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+function applyBlock(entry) {
+  alertTitle.textContent = entry.until
+    ? `Отправка обращений ограничена до ${formatUntil(entry)}`
+    : 'Отправка обращений ограничена без срока';
+  alertText.textContent = `Причина: ${entry.reason || 'не указана'}.`;
+  alertBox.classList.add('show');
+  setFormDisabled(true);
+  btn.innerHTML = '<i class="fa-solid fa-ban"></i><span>Отправка недоступна</span>';
+}
+
+const JUNK_WORDS = ['test', 'тест', 'asdf', 'qwerty', 'admin', 'username', 'telegram', 'discord', 'none', 'null', 'нет', 'ник', 'nick'];
+const KEY_MASH = /(qwer|asdf|zxcv|йцук|фыва|ячсм)/i;
+
+function looksFake(name) {
+  const t = name.toLowerCase();
+  if (/(.)\1{4,}/.test(t)) return true;
+  if (KEY_MASH.test(t)) return true;
+  if (JUNK_WORDS.includes(t)) return true;
+  return false;
+}
+
+function validateNickname(value) {
+  if (!value) return 'Укажите игровой никнейм';
+  if (!/^[A-Za-z0-9_]{3,16}$/.test(value)) return 'Ник: 3–16 символов, только латиница, цифры и _';
+  if (looksFake(value)) return 'Похоже на случайный набор символов. Укажите свой настоящий ник';
+  return null;
+}
+
+function validateContact(type, raw) {
+  let v = raw.trim().replace(/\s+/g, '');
+  if (!v) return { error: 'Укажите контакт для связи' };
+  if (type === 'telegram') {
+    v = v.replace(/^https?:\/\//i, '').replace(/^t\.me\//i, '');
+    if (!v.startsWith('@')) v = '@' + v;
+    const name = v.slice(1);
+    if (!/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(name)) {
+      return { error: 'Telegram-username: 5–32 символа, латиница, цифры и _, начинается с буквы. Пример: @username' };
+    }
+    if (looksFake(name)) return { error: 'Похоже на несуществующий username. Укажите реальный контакт' };
+    return { value: v };
+  }
+  v = v.replace(/^@/, '');
+  if (v.includes('#')) {
+    if (!/^[^#\s@:`]{2,32}#\d{4}$/.test(v)) {
+      return { error: 'Discord-тег должен выглядеть так: Name#0001' };
+    }
+    if (looksFake(v.split('#')[0])) return { error: 'Похоже на несуществующий тег. Укажите реальный контакт' };
+    return { value: v };
+  }
+  v = v.toLowerCase();
+  if (!/^[a-z0-9_.]{2,32}$/.test(v) || v.includes('..')) {
+    return { error: 'Discord-username: 2–32 символа, латиница, цифры, _ и точка. Пример: username' };
+  }
+  if (looksFake(v)) return { error: 'Похоже на несуществующий username. Укажите реальный контакт' };
+  return { value: v };
+}
+
+function validateMessage(raw) {
+  const text = raw.replace(/\s+/g, ' ').trim();
+  if (text.length < 20) return 'Опишите ситуацию подробнее — минимум 20 символов';
+  const words = text.split(' ').filter(Boolean);
+  if (words.length < 4) return 'Напишите хотя бы несколько слов, чтобы мы поняли суть';
+  const compact = text.replace(/ /g, '');
+  const letters = (compact.match(/[A-Za-zА-Яа-яЁё]/g) || []).length;
+  if (letters / compact.length < 0.6) return 'В тексте слишком много цифр и символов. Опишите ситуацию словами';
+  if (/(.)\1{5,}/.test(text)) return 'В тексте слишком много повторяющихся символов';
+  if (KEY_MASH.test(text)) return 'Текст похож на случайный набор букв';
+  const clean = words.map(w => w.toLowerCase().replace(/[^a-zа-яё0-9]/g, '')).filter(Boolean);
+  if (clean.length >= 6 && new Set(clean).size / clean.length < 0.4) return 'В тексте слишком много повторов';
+  const long = clean.filter(w => w.length >= 6 && /[a-zа-яё]/.test(w));
+  const noVowel = long.filter(w => !/[аеёиоуыэюяaeiouy]/.test(w));
+  if (long.length >= 2 && noVowel.length / long.length > 0.4) return 'Текст похож на случайный набор букв';
+  const links = text.match(/https?:\/\/\S+|www\.\S+/gi) || [];
+  if (links.length > 3) return 'В обращении не более 3 ссылок';
+  if (/discord\.gg\/|discord(app)?\.com\/invite|t\.me\/(\+|joinchat)/i.test(text)) return 'Ссылки-приглашения в обращениях запрещены';
+  if (/(казино|casino|ставки на спорт|заработок без вложений|free nitro|бесплатный нитро|подписывайся на)/i.test(text)) return 'Похоже на рекламу или спам';
+  return null;
+}
+
+messageEl.addEventListener('input', () => {
+  counterEl.textContent = `${messageEl.value.length} / 1500`;
+});
+
+['recipient', 'topic', 'nickname', 'contact', 'message'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => setError(id, null));
+  el.addEventListener('change', () => setError(id, null));
+});
+
+recipientEl.addEventListener('change', updateLevelHint);
+
+contactTypeEl.addEventListener('change', () => {
+  if (contactTypeEl.value === 'telegram') {
+    contactEl.placeholder = '@username';
+    contactHint.textContent = 'Ваш Telegram-username, например @username';
+    contactIcon.className = 'fa-brands fa-telegram';
+  } else {
+    contactEl.placeholder = 'username или Name#0001';
+    contactHint.textContent = 'Ваш Discord-username, например username (или тег Name#0001)';
+    contactIcon.className = 'fa-brands fa-discord';
+  }
+  setError('contact', null);
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  alertBox.classList.remove('show');
+
+  const last = Number(storageGet(LS_LAST) || 0);
+  const left = COOLDOWN_MS - (Date.now() - last);
+  if (left > 0) {
+    showToast(`Подождите ${Math.ceil(left / 1000)} сек. перед повторной отправкой`, 'info');
+    return;
+  }
+
+  const recipient = recipientEl.value;
+  const topic = document.getElementById('topic').value;
+  const nickname = document.getElementById('nickname').value.trim();
+  const contactType = contactTypeEl.value;
+  const contactRaw = contactEl.value;
+  const message = messageEl.value.trim();
+
+  let firstBad = null;
+  function check(id, error) {
+    setError(id, error);
+    if (error && !firstBad) firstBad = document.getElementById(id);
+  }
+
+  check('recipient', LEVELS[recipient] ? null : 'Выберите, кому адресовано обращение');
+  check('topic', topic ? null : 'Выберите тему обращения');
+  check('nickname', validateNickname(nickname));
+  const contactResult = validateContact(contactType, contactRaw);
+  check('contact', contactResult.error || null);
+  check('message', validateMessage(message));
+
+  if (firstBad) {
+    firstBad.focus();
+    showToast('Проверьте выделенные поля формы', 'error');
+    return;
+  }
+
+  const contactValue = contactResult.value;
+
+  const block = findBlock(nickname, contactValue);
+  if (block) {
+    storageSet(LS_BLOCK, entryRef(block));
+    applyBlock(block);
+    return;
+  }
+
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Отправка...</span>';
+  btn.disabled = true;
+
+  const level = LEVELS[recipient];
+  const personal = !!level.personal;
+  const safeMessage = message.replace(/`/g, "'");
+  const contactLabel = contactType === 'telegram' ? 'Telegram' : 'Discord';
+
+  const fields = [
+    { name: 'Тема', value: topic, inline: true },
+    { name: 'Игрок', value: `\`${nickname}\``, inline: true },
+    { name: `Контакт (${contactLabel})`, value: `**${contactValue}**`, inline: true }
+  ];
+  if (personal) {
+    fields.unshift({
+      name: '⛔ Статус',
+      value: 'НЕ БРАТЬ В РАБОТУ. Обращение предназначено только Руководителю. Исключение — если сам Руководитель разрешил взять это обращение.',
+      inline: false
+    });
+  }
+
+  const payload = {
+    embeds: [{
+      author: { name: personal ? 'Личное обращение Руководителю' : 'Новое входящее обращение' },
+      color: parseInt(level.color, 16),
+      description: `**Уровень ${level.rank}:** \`${recipient}\`\n\n\`\`\`text\n${safeMessage}\n\`\`\``,
+      fields: fields,
+      timestamp: new Date().toISOString()
+    }],
+    allowed_mentions: personal ? { parse: ['everyone', 'roles'] } : { parse: [] }
+  };
+
+  if (personal) {
+    payload.content = `${OWNER_ALERT_MENTION} ⛔ **ЛИЧНОЕ ОБРАЩЕНИЕ РУКОВОДИТЕЛЮ — НЕ БРАТЬ В РАБОТУ!** Обращение адресовано лично Angel0ut. Брать его запрещено, если только сам Руководитель не разрешил.`.trim();
+  }
+
+  try {
+    const response = await fetch(FORM_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      storageSet(LS_LAST, String(Date.now()));
+      showToast('Обращение успешно отправлено!', 'success');
+      form.reset();
+      contactTypeEl.dispatchEvent(new Event('change'));
+      updateLevelHint();
+      counterEl.textContent = '0 / 1500';
+    } else if (response.status === 429) {
+      showToast('Слишком много запросов. Попробуйте чуть позже.', 'error');
+    } else {
+      showToast('Ошибка сервера Discord. Проверьте вебхук.', 'error');
+    }
+  } catch (error) {
+    showToast('Ошибка сети. Не удалось отправить.', 'error');
+  } finally {
+    btn.innerHTML = SEND_LABEL;
+    btn.disabled = false;
+  }
+});
+
+(function restoreBlock() {
+  const ref = storageGet(LS_BLOCK);
+  if (!ref) return;
+  const entry = BLOCKLIST.find(x => entryActive(x) && entryRef(x) === ref);
+  if (entry) applyBlock(entry);
+  else storageDel(LS_BLOCK);
+})();
+</script>
 </body>
 </html>
